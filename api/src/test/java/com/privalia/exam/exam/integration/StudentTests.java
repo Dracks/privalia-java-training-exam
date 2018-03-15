@@ -143,8 +143,12 @@ public class StudentTests {
         assertEquals(1, count);*/
     }
 
+    @Test
     public void deleteUser(){
         subject.destroy(student2.getId());
+
+        Student result = repository.findOne(student2.getId());
+        assertNull(result);
     }
 
 }

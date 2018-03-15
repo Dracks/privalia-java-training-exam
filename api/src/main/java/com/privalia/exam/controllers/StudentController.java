@@ -47,7 +47,7 @@ public class StudentController {
         return student;
     }
 
-    @RequestMapping(value="/{id}", method = RequestMethod.POST, produces="application/json")
+    @RequestMapping(value="/{id}", method = RequestMethod.PUT, produces="application/json")
     @Transactional
     public Student update(@PathVariable int id,@RequestBody Student student) {
         Student st = repository.findOne(id);
@@ -75,7 +75,13 @@ public class StudentController {
         return st;
     }
 
+    @RequestMapping(value="/{id}", method = RequestMethod.DELETE, produces="application/json")
+    @Transactional
     public void destroy(int id) {
-
+        Student st = repository.findOne(id);
+        Hibernate.initialize(st.getAddressList());
+        List<Address> addressList = st.getAddressList();
+        addressList.forEach(address -> addressRepository.delete(address));
+        repository.delete(st);
     }
 }
