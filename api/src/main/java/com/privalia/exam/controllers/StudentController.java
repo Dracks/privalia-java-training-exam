@@ -24,7 +24,7 @@ public class StudentController {
     @Autowired
     private AddressRepository addressRepository;
 
-    @RequestMapping(value="/", produces="application/json")
+    @RequestMapping(value="/", method = RequestMethod.GET, produces="application/json")
     public List<Student> list(){
         Iterable<Student> data = repository.findAll();
         List<Student> list = new ArrayList<>();
@@ -32,7 +32,7 @@ public class StudentController {
         return list;
     }
 
-    @RequestMapping(value="/{id}", produces="application/json")
+    @RequestMapping(value="/{id}", method = RequestMethod.GET, produces="application/json")
     public Student get(@PathVariable Integer id) {
         return repository.findOne(id);
     }
