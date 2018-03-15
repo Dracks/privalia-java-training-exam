@@ -4,10 +4,9 @@ import com.privalia.exam.domain.Student;
 import com.privalia.exam.repository.StudentRepository;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,5 +30,19 @@ public class StudentController {
     public Student get(@PathVariable Integer id) {
         return repository.findOne(id);
     }
+
+    @RequestMapping(value="/", method = RequestMethod.POST, produces="application/json")
+    @Transactional
+    public Student create(@RequestBody Student student){
+        student.getAddressList().forEach(address -> {
+            address.setStudent(student);
+        });
+        repository.save(student);
+        return student;
+    }
+
+
+
+
 
 }

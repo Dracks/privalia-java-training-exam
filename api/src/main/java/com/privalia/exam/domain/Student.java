@@ -31,7 +31,7 @@ public class Student {
     private String lastName;
 
     @OneToMany(fetch = FetchType.LAZY,
-            cascade =  CascadeType.ALL,
+            cascade =  CascadeType.PERSIST,
             mappedBy = "student")
     private List<Address> addressList;
 
