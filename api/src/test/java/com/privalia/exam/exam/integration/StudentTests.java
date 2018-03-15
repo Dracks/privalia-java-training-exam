@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.TestCase.assertNotNull;
@@ -109,6 +110,41 @@ public class StudentTests {
         assertTrue(isOk);
         assertNotEquals(0, st.getId());
         assertNull(addressRepository.findOne(st.getId()));
+    }
+
+    @Test
+    public void updateUserOneField(){
+        Student st = new Student();
+        st.setName("Dalek!");
+        Student newStudent = subject.update(student1.getId(),st);
+
+        assertEquals("Dalek!", newStudent.getName());
+        assertEquals(student1.getLastName(), newStudent.getLastName());
+    }
+
+    @Test
+    public void updateUserAllFields(){
+        Student st = new Student("Dalek", "Skaro");
+        //Address addr1 = new Address("Pepito!", "nothing!");
+        //st.setAddressList(Arrays.asList(addr1));
+
+        Student newStudent = subject.update(student1.getId(), st);
+
+        assertEquals("Dalek", newStudent.getName());
+        assertEquals("Skaro", newStudent.getLastName());
+
+        /*int count = 0;
+        for (Address address: addressRepository.findAll()){
+            if (address.getStudent().getId()==student1.getId()){
+                count++;
+            }
+        }
+
+        assertEquals(1, count);*/
+    }
+
+    public void deleteUser(){
+        subject.destroy(student2.getId());
     }
 
 }

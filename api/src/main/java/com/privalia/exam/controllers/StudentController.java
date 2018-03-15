@@ -1,8 +1,11 @@
 package com.privalia.exam.controllers;
 
+import com.privalia.exam.domain.Address;
 import com.privalia.exam.domain.Student;
+import com.privalia.exam.repository.AddressRepository;
 import com.privalia.exam.repository.StudentRepository;
 import io.swagger.annotations.Api;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +20,9 @@ public class StudentController {
 
     @Autowired
     private StudentRepository repository;
+
+    @Autowired
+    private AddressRepository addressRepository;
 
     @RequestMapping(value="/", produces="application/json")
     public List<Student> list(){
@@ -41,8 +47,35 @@ public class StudentController {
         return student;
     }
 
+    @RequestMapping(value="/{id}", method = RequestMethod.POST, produces="application/json")
+    @Transactional
+    public Student update(@PathVariable int id,@RequestBody Student student) {
+        Student st = repository.findOne(id);
+        if (student.getName()!=null){
+            st.setName(student.getName());
+        }
 
+        if (student.getLastName()!=null){
+            st.setLastName(student.getLastName());
+        }
 
+        if (student.getAddressList()!=null){
+            Hibernate.initialize(st.getAddressList());
+            List<Address> oldAddressList = st.getAddressList();
+            oldAddressList.forEach(address -> addressRepository.delete(address));
+            List<Address> newList = student.getAddressList();
+            newList.forEach(address -> {
+                address.setStudent(st);
+                addressRepository.save(address);
+            } );
+            st.setAddressList(newList);
 
+        }
+        repository.save(st);
+        return st;
+    }
 
+    public void destroy(int id) {
+
+    }
 }
